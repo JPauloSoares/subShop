@@ -9,6 +9,7 @@ import javax.persistence.*;
 public abstract class Products {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String description;
     private double price;

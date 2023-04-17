@@ -160,7 +160,7 @@
 
     <build>
 
-        <finalName>Java Bank</finalName>
+        <finalName>Frozen Shop</finalName>
 
         <plugins>
             <plugin>

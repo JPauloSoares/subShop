@@ -7,4 +7,10 @@ import javax.persistence.Entity;
 @DiscriminatorValue("Light")
 public class LightSub extends Products {
 
+    public LightSub(){
+        super();
+        super.setDescription("Light Sub");
+        super.setPrice(15);
+    }
+
 }

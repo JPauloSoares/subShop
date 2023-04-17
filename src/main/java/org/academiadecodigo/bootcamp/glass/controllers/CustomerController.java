@@ -4,6 +4,9 @@ import org.academiadecodigo.bootcamp.glass.converters.CustomerDTOtoCustomer;
 import org.academiadecodigo.bootcamp.glass.converters.CustomerToCustomerDTO;
 import org.academiadecodigo.bootcamp.glass.dto.CustomerDTO;
 import org.academiadecodigo.bootcamp.glass.model.customer.Customer;
+import org.academiadecodigo.bootcamp.glass.model.products.LightSub;
+import org.academiadecodigo.bootcamp.glass.model.products.MaxSub;
+import org.academiadecodigo.bootcamp.glass.model.products.MediumSub;
 import org.academiadecodigo.bootcamp.glass.services.CustomerService;
 import org.academiadecodigo.bootcamp.glass.services.CustomerServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,18 +138,24 @@ public class CustomerController {
     @RequestMapping(method = RequestMethod.POST, path = "/customer/subscribeLight/{id}")
     public ResponseEntity<Customer> subscribeLight(@PathVariable int id ) {
 
-       Customer customer = customerService.get(id);
-       customer.setBalance(customerService.get(id).getBalance() - 15);
-       customerService.save(customer);
+        Customer customer = customerService.get(id);
+        LightSub lightSub= new LightSub();
+        customer.setProducts(lightSub);
+
+        customer.setBalance(customerService.get(id).getBalance() - 15);
+        customerService.save(customer);
 
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/customer/subscribeMedium/{id}")
-    public ResponseEntity<Customer> subscribeMedium(@PathVariable int id ) {
+    public ResponseEntity<?> subscribeMedium(@PathVariable int id ) {
 
         Customer customer = customerService.get(id);
+        MediumSub mediumSub = new MediumSub();
+        customer.setProducts(mediumSub);
+
         customer.setBalance(customerService.get(id).getBalance() - 40);
         customerService.save(customer);
 
@@ -155,9 +164,12 @@ public class CustomerController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/customer/subscribeMax/{id}")
-    public ResponseEntity<Customer> subscribeMax(@PathVariable int id ) {
+    public ResponseEntity<?> subscribeMax(@PathVariable int id ) {
 
         Customer customer = customerService.get(id);
+        MaxSub maxSub = new MaxSub();
+        customer.setProducts(maxSub);
+
         customer.setBalance(customerService.get(id).getBalance() - 100);
         customerService.save(customer);
 
@@ -165,11 +177,12 @@ public class CustomerController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/customer/deposit/{id}/{amount}")
-    public ResponseEntity<Customer> deposit(@RequestParam("id") int id, @RequestParam("amount") int amount) {
+    @RequestMapping(method = RequestMethod.POST, path = "/customer/{id}/deposit/{amount}")
+    public ResponseEntity<?> deposit(@PathVariable("id") Integer id, @PathVariable("amount") Integer amount) {
 
         Customer customer = customerService.get(id);
-        customer.setBalance(customerService.get(id).getBalance() + amount);
+        double balance = customer.getBalance() + amount;
+        customer.setBalance(balance);
         customerService.save(customer);
 
 
