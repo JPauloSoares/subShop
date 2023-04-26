@@ -7,6 +7,9 @@ import org.academiadecodigo.bootcamp.glass.model.customer.Customer;
 import org.academiadecodigo.bootcamp.glass.model.products.LightSub;
 import org.academiadecodigo.bootcamp.glass.model.products.MaxSub;
 import org.academiadecodigo.bootcamp.glass.model.products.MediumSub;
+import org.academiadecodigo.bootcamp.glass.model.products.options.LightSubOptions;
+import org.academiadecodigo.bootcamp.glass.model.products.options.MaxSubOptions;
+import org.academiadecodigo.bootcamp.glass.model.products.options.MediumSubOptions;
 import org.academiadecodigo.bootcamp.glass.services.CustomerService;
 import org.academiadecodigo.bootcamp.glass.services.CustomerServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("/customer")
 public class CustomerController {
 
     private CustomerService customerService;
@@ -54,41 +58,32 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        CustomerDTO customerDTO = customerToCustomerDto.convert(customer);
-        return new ResponseEntity<>(customerDTO, HttpStatus.OK);
+        return new ResponseEntity<>(customerToCustomerDto.convert(customer), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = {"/customer/add"})
-    public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
+    @RequestMapping(method = RequestMethod.POST, path = {"/add"})
+    public ResponseEntity<?> addCustomer(@RequestBody CustomerDTO customerDTO) {
 
-        Customer customer1;
-        if (customer.getId() != null) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+        if (customerDTO.getId() != 0) {
+            return new ResponseEntity<>(customerDTO,HttpStatus.FORBIDDEN);
+
         } else {
 
-
-            customer1 = new Customer();
-
-            customer1.setFirstName(customer.getFirstName());
-            customer1.setLastName(customer.getLastName());
-            customer1.setEmail(customer.getEmail());
-            customer1.setPhone(customer.getPhone());
-            customer1.setPassword(customer.getPassword());
-
-            customerService.save(customer1);
+            customerService.save(customerDtoToCustomer.convert(customerDTO));
         }
 
-        return new ResponseEntity<>(customer1, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, path = "/customer/{id}")
+    @RequestMapping(method = RequestMethod.PUT, path = "/{id}")
     public ResponseEntity<CustomerDTO> editCustomer(@Valid @RequestBody CustomerDTO customerDto, BindingResult bindingResult, @PathVariable Integer id) {
 
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        if (customerDto.getId() != null && !customerDto.getId().equals(id)) {
+        if (customerDto.getId() != 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -102,103 +97,20 @@ public class CustomerController {
         customer.setLastName(customerDto.getLastName());
         customer.setEmail(customerDto.getEmail());
         customer.setPhone(customerDto.getPhone());
-        customer.setPassword(customerDto.getPassword());
 
-        customerDto.setId(id);
-        customerService.save(customerDtoToCustomer.convert(customerDto));
+
+        customerService.save(customer);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, path = "/customer/{id}")
+    @RequestMapping(method = RequestMethod.DELETE, path = "/{id}")
     public ResponseEntity<?> deleteCustomer(@PathVariable int id) {
 
         customerService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
 
-    }
-
-
-    @RequestMapping(method = RequestMethod.POST, path = "/customer/login")
-    public ResponseEntity<Customer> customerLogin(@RequestBody Customer customer) {
-
-        Customer customer1;
-
-        if (customerService.findByEmail(customer.getEmail()) != null) {
-            customer1 = customerService.findByEmail(customer.getEmail());
-
-            if (customer.getPassword().equals(customer1.getPassword())) {
-                return new ResponseEntity<>(customer1, HttpStatus.OK);
-            }
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, path = "/customer/subscribeLight/{id}")
-    public ResponseEntity<Customer> subscribeLight(@PathVariable int id ) {
-
-        Customer customer = customerService.get(id);
-        LightSub lightSub= new LightSub();
-        customer.setProducts(lightSub);
-
-        customer.setBalance(customerService.get(id).getBalance() - 15);
-        customerService.save(customer);
-
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, path = "/customer/subscribeMedium/{id}")
-    public ResponseEntity<?> subscribeMedium(@PathVariable int id ) {
-
-        Customer customer = customerService.get(id);
-        MediumSub mediumSub = new MediumSub();
-        customer.setProducts(mediumSub);
-
-        customer.setBalance(customerService.get(id).getBalance() - 40);
-        customerService.save(customer);
-
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, path = "/customer/subscribeMax/{id}")
-    public ResponseEntity<?> subscribeMax(@PathVariable int id ) {
-
-        Customer customer = customerService.get(id);
-        MaxSub maxSub = new MaxSub();
-        customer.setProducts(maxSub);
-
-        customer.setBalance(customerService.get(id).getBalance() - 100);
-        customerService.save(customer);
-
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, path = "/customer/{id}/deposit/{amount}")
-    public ResponseEntity<?> deposit(@PathVariable("id") Integer id, @PathVariable("amount") Integer amount) {
-
-        Customer customer = customerService.get(id);
-        double balance = customer.getBalance() + amount;
-        customer.setBalance(balance);
-        customerService.save(customer);
-
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @RequestMapping(method = RequestMethod.GET, path = "/balance/{id}")
-    public ResponseEntity<?> balanceCustomer(@PathVariable Integer id) {
-
-        Customer customer = customerService.get(id);
-
-        if (customer == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(customer.getBalance(), HttpStatus.OK);
     }
 
 }

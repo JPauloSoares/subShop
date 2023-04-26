@@ -1,5 +1,5 @@
 package org.academiadecodigo.bootcamp.glass.model.customer;
-import org.academiadecodigo.bootcamp.glass.model.products.Products;
+import org.academiadecodigo.bootcamp.glass.model.products.Subscriptions;
 
 import javax.persistence.*;
 
@@ -31,8 +31,7 @@ public class Customer extends AbstractModel {
     @OneToOne(
             cascade = CascadeType.ALL
     )
-    private Products products;
-
+    private Subscriptions subscriptions;
 
 
     public String getFirstName() {
@@ -71,12 +70,12 @@ public class Customer extends AbstractModel {
         this.balance = balance;
     }
 
-    public Products getProducts() {
-        return products;
+    public Subscriptions getProducts() {
+        return subscriptions;
     }
 
-    public void setProducts(Products products) {
-        this.products = products;
+    public void setProducts(Subscriptions subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     public void setAddress(String address) {
@@ -101,7 +100,7 @@ public class Customer extends AbstractModel {
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +
                 ", balance=" + balance +
-                ", products=" + products +
+                ", products=" + subscriptions +
                 super.toString() +
                 '}';
     }

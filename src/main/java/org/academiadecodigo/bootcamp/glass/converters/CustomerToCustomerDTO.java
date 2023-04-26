@@ -10,13 +10,14 @@ public class CustomerToCustomerDTO extends AbstractConverter<Customer, CustomerD
     @Override
     public CustomerDTO convert(Customer customer) {
 
-        CustomerDTO customerDTO= new CustomerDTO();
+        CustomerDTO customerDTO = new CustomerDTO();
 
         customerDTO.setId(customer.getId());
         customerDTO.setFirstName(customer.getFirstName());
         customerDTO.setLastName(customer.getLastName());
         customerDTO.setEmail(customer.getEmail());
         customerDTO.setPhone(customer.getPhone());
+        customerDTO.setAddress(customer.getAddress());
 
         return customerDTO;
     }

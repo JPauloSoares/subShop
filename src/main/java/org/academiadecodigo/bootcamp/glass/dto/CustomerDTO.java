@@ -3,13 +3,14 @@ package org.academiadecodigo.bootcamp.glass.dto;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
+
 @Component
 public class CustomerDTO {
-     private int id;
-     @NotNull(message = "First name is mandatory")
-     @NotBlank(message = "First name is mandatory")
-     @Size(min = 3, max = 45)
-     private String firstName;
+    private int id;
+    @NotNull(message = "First name is mandatory")
+    @NotBlank(message = "First name is mandatory")
+    @Size(min = 3, max = 45)
+    private String firstName;
 
     @NotNull(message = "Last name is mandatory")
     @NotBlank(message = "Last name is mandatory")
@@ -26,10 +27,11 @@ public class CustomerDTO {
     @Size(min = 9, max = 16)
     private String phone;
 
-    private String address;
-
     @NotNull
     @NotBlank
+    private String address;
+
+
     public String getAddress() {
         return address;
     }

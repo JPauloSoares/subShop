@@ -26,10 +26,7 @@ public class CustomerDTOtoCustomer implements Converter<CustomerDTO, Customer> {
         if (customerService.get(customerDTO.getId()) != null){
 
             customer = customerService.get(customerDTO.getId());
-            customer.setFirstName(customerDTO.getFirstName());
-            customer.setLastName(customerDTO.getLastName());
-            customer.setEmail(customerDTO.getEmail());
-            customer.setPhone(customerDTO.getPhone());
+
         }
 
         else {
@@ -39,6 +36,8 @@ public class CustomerDTOtoCustomer implements Converter<CustomerDTO, Customer> {
            customer.setLastName(customerDTO.getLastName());
            customer.setEmail(customerDTO.getEmail());
            customer.setPhone(customerDTO.getPhone());
+           customer.setPassword(customerDTO.getPassword());
+           customer.setAddress(customerDTO.getAddress());
         }
 
         return customer;
